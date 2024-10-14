@@ -25,3 +25,5 @@ yarn-error.log*
 #sensible data
 src/csv
 test
+server
+data.env
