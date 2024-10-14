@@ -3,8 +3,8 @@ import Papa from "papaparse";
 import {
   accountDataFormat,
   accountFileColumn,
-} from "./functions/accountDataFormat";
-import { sortExpenses } from "./functions/handleExpenses";
+} from "../functions/accountDataFormat";
+import { sortExpenses } from "../functions/handleExpenses";
 
 function CsvToJson({ setAccountData, setFullAccountData, setNotionData }) {
   const [csvFile, setCsvFile] = useState(null);

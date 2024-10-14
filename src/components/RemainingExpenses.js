@@ -1,5 +1,5 @@
 import DataDisplayer from "./DataDisplayer";
-import { remainingExpenses } from "./functions/handleExpenses";
+import { remainingExpenses } from "../functions/handleExpenses";
 
 function RemainingExpenses({ fullAccountData, notionData }) {
   const [remainingAccount, remainingNotion] = remainingExpenses(
