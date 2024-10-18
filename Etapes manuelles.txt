@@ -1,0 +1,7 @@
+//export account débits différés
+1. Voir les dates du débit à extraire
+2. Compte individuelle > Télécharger les opérations
+    a. type d'opérations : Facturettes
+    b. Période personnalisée et renseigner les dates
+    c. séparateur de champs : ;
+    d. séparateur décimal : ,
