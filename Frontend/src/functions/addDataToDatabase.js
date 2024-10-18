@@ -1,4 +1,5 @@
 export function addDataToDatabase(data, tableOfDb) {
+  console.log(data);
   fetch("http://localhost:4000/addExpenses", {
     method: "POST",
     headers: {

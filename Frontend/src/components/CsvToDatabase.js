@@ -12,8 +12,15 @@ function CsvToDatabase() {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (e) => {
-        setCsvFile(accountCsvFormat(e.target.result));
+      reader.onload = async (e) => {
+        //async car attente de formattedData (due au parsing des données dans accountCsvFormat)
+        try {
+          //
+          const formattedData = await accountCsvFormat(e.target.result);
+          setCsvFile(formattedData);
+        } catch (error) {
+          console.error("Erreur lors du formattage du csv:", error);
+        }
       };
       reader.readAsText(file);
     }

@@ -1,27 +1,43 @@
 //Pour le parsing csv to json
 import Papa from "papaparse";
+//Pour le renommage des names des dépenses
+import { renameAccountExpenses } from "./renameAccountExpenses";
+//Pour mettre les dates au bon format
+import { formateDate } from "./formateDate";
 
-export function accountCsvFormat(csvFile) {
-  let parsedData;
+export async function accountCsvFormat(csvFile) {
+  //Rennomage des colonnes problématiques
+  const columnMapping = {
+    Transports: "Transports,Trains, avions et ferrys",
+    Energie: "Energie eau, gaz, electricite, fioul",
+    Expo: "Expo, musee, cinema",
+    Sport: "Sport, Gym et Equipement",
+    Musique: "Video, Musique et jeux",
+  };
+  for (const [key, value] of Object.entries(columnMapping)) {
+    const regex = new RegExp(value, "g"); // Crée une expression régulière pour remplacer toutes les occurrences
+    csvFile = csvFile.replace(regex, key);
+  }
+
   //Conversion du csv en json
-  Papa.parse(csvFile, {
-    header: true, // Prend la première ligne comme en-têtes
-    dynamicTyping: true, // Convertit les types automatiquement
-    complete: (result) => {
-      // setAccountData(sortExpenses(accountCsvFormat(result.data), "Debit"));
-      parsedData = result.data;
-    },
-    error: (error) => {
-      console.error("Erreur lors du parsing:", error);
-    },
+  let parsedData = await new Promise((resolve, reject) => {
+    Papa.parse(csvFile, {
+      header: true, // Prend la première ligne comme en-têtes
+      dynamicTyping: true, // Convertit les types automatiquement
+      complete: (result) => {
+        resolve(result.data);
+      },
+      error: (error) => {
+        console.error("Erreur lors du parsing:", error);
+        reject(error);
+      },
+    });
   });
 
   //suppression du dernier élément (qui est vide par défaut dans l'export account)
-  console.log(parsedData);
   parsedData = parsedData.filter(
     (expense) => expense["Date de comptabilisation"] !== null //le dernier élément est sous la forme {"Date de comptabilisation": null}
   );
-  console.log(parsedData);
   // //suppression des prélèvement débit différé
   // data = data.filter(
   //   (dataKey) => !dataKey["Libelle simplifie"].includes("DEBIT")
@@ -75,17 +91,7 @@ export function accountCsvFormat(csvFile) {
     entry["paiement"] = "Débit 04/10/24";
   });
 
-  return parsedData;
-}
-
-export function accountFileColumn(fileTxt) {
-  // Remplacer les chaînes problématiques avant de parser
-  fileTxt = fileTxt
-    .replace(/Energie eau, gaz, electricite, fioul/g, "Energie")
-    .replace(/Expo, musee, cinema/g, "Expo")
-    .replace(/Trains, avions et ferrys/g, "Trains")
-    .replace(/Sport, Gym et Equipement/g, "Sport")
-    .replace(/Video, Musique et jeux/g, "Musique");
-
-  return fileTxt;
+  const renamedData = renameAccountExpenses(parsedData);
+  const dateFormattedData = formateDate(renamedData);
+  return dateFormattedData;
 }
