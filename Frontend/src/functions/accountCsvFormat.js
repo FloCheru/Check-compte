@@ -6,9 +6,9 @@ import { renameAccountExpenses } from "./renameAccountExpenses";
 import { formateDate } from "./formateDate";
 
 export async function accountCsvFormat(csvFile) {
-  //Rennomage des colonnes problématiques
+  //Rennomage des colonnes problématiques);
   const columnMapping = {
-    Transports: "Transports,Trains, avions et ferrys",
+    Transports: "Trains, avions et ferrys",
     Energie: "Energie eau, gaz, electricite, fioul",
     Expo: "Expo, musee, cinema",
     Sport: "Sport, Gym et Equipement",
