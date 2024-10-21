@@ -3,9 +3,11 @@ import React, { useState, useEffect } from "react";
 import { accountCsvFormat } from "../functions/accountCsvFormat";
 //pour requete serveur, ajouter les données dans la db
 import { addDataToDatabase } from "../functions/addDataToDatabase";
+//pour les boutons normalisés
+import { Button } from "./atoms/Button";
 
 function CsvToDatabase() {
-  const [csvFile, setCsvFile] = useState(null); // Pour stocker le fichier csv
+  const [dataToAdd, setDataToAdd] = useState(null); // Pour stocker les données à ajouter dans la db
 
   //formatter et détecter vers quelle table envoyer les données
   const handleFileLoading = (event) => {
@@ -17,7 +19,7 @@ function CsvToDatabase() {
         try {
           //
           const formattedData = await accountCsvFormat(e.target.result);
-          setCsvFile(formattedData);
+          setDataToAdd(formattedData);
         } catch (error) {
           console.error("Erreur lors du formattage du csv:", error);
         }
@@ -25,24 +27,57 @@ function CsvToDatabase() {
       reader.readAsText(file);
     }
   };
-  //Appel de addDataToDatabase quand csvFile est mis à jour
-  useEffect(() => {
-    if (csvFile) {
+  const handleExpensesSubmit = () => {
+    console.log("eghe");
+    if (dataToAdd) {
       //requête serveur pour envoyer les données dans la db
-      addDataToDatabase(csvFile, "account");
+      addDataToDatabase(dataToAdd, "account");
     }
-  }, [csvFile]);
+  };
 
   return (
-    <div className="border-solid border-2 border-s-slate-600">
+    <div className="flex flex-col border-solid border-2 border-s-slate-600">
       <input
         type="file"
         multiple
         accept=".csv"
-        id="full-account"
+        id="file-input"
         onChange={handleFileLoading}
       />
-      <button>Upload</button>
+      {dataToAdd && (
+        <div>
+          <h2>Expenses to be added in database</h2>
+          <div className="flex items-start">
+            <table>
+              <thead>
+                <tr>
+                  {Object.keys(dataToAdd[0]).map((key, i) => (
+                    <th key={i}>{key}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {dataToAdd.map((expense, i) => (
+                  <tr key={i}>
+                    {Object.values(expense).map((entry, j) => (
+                      <td
+                        key={j}
+                        className="p-2 border-solid border-2 border-s-slate-600"
+                      >
+                        {entry}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <Button
+              text="Upload into dataBase"
+              onClick={handleExpensesSubmit}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

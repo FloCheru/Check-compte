@@ -1,5 +1,3 @@
-// require("dotenv").config();
-
 //Authentification
 
 const { Client } = require("@notionhq/client");

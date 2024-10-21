@@ -32,10 +32,6 @@ db.connect((err) => {
   console.log("Connecté à la base de données check_compte");
 });
 
-app.get("/", (req, res) => {
-  return res.json("Hello World!");
-});
-
 //configuration de la connexion à la base de données Notion
 const fs = require("node:fs");
 const { Client } = require("@notionhq/client");
