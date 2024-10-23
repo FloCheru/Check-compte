@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 //pour le formattage du Csv account
-import { accountCsvFormat } from "../functions/accountCsvFormat";
+import { accountCsvFormat } from "../functions/accountCSVformatting/accountCsvFormat";
 //pour requete serveur, ajouter les données dans la db
-import { addDataToDatabase } from "../functions/addDataToDatabase";
+import { addDataToMySQLDatabase } from "../functions/addDataToMySQLDatabase";
 //pour les boutons normalisés
 import { Button } from "./atoms/Button";
+import { addDataToNotion } from "../functions/addDataToNotion";
 
 function CsvToDatabase() {
   const [dataToAdd, setDataToAdd] = useState(null); // Pour stocker les données à ajouter dans la db
@@ -28,10 +29,10 @@ function CsvToDatabase() {
     }
   };
   const handleExpensesSubmit = () => {
-    console.log("eghe");
     if (dataToAdd) {
       //requête serveur pour envoyer les données dans la db
-      addDataToDatabase(dataToAdd, "account");
+      // addDataToMySQLDatabase(dataToAdd, "account");
+      addDataToNotion(dataToAdd);
     }
   };
 

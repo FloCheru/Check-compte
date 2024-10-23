@@ -1,18 +1,12 @@
 export function addDataToNotion(data) {
-  fetch("http://localhost:4000/submitFormToNotion", {
+  fetch("http://localhost:4000/addExpensesToNotion", {
     method: "post",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      name: data.name,
-      montant: data.montant,
-      catégorie: data.catégorie,
-      réglé: data.réglé,
-      select: data.select,
-      tricount: data.tricount,
-      mois: data.mois,
-      date: data.date,
+      //il faut envoyer les données sous forme de JSON
+      data: data,
     }),
   })
     .then((response) => response.json())

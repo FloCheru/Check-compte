@@ -2,8 +2,12 @@
 import Papa from "papaparse";
 //Pour le renommage des names des dépenses
 import { renameAccountExpenses } from "./renameAccountExpenses";
+//Pour ajouter le paiement
+import { paiementSetting } from "./paiementSetting";
 //Pour mettre les dates au bon format
 import { formateDate } from "./formateDate";
+//Pour ajouter le mois
+import { monthSetting } from "./monthSetting";
 
 export async function accountCsvFormat(csvFile) {
   //Rennomage des colonnes problématiques);
@@ -18,7 +22,6 @@ export async function accountCsvFormat(csvFile) {
     const regex = new RegExp(value, "g"); // Crée une expression régulière pour remplacer toutes les occurrences
     csvFile = csvFile.replace(regex, key);
   }
-
   //Conversion du csv en json
   let parsedData = await new Promise((resolve, reject) => {
     Papa.parse(csvFile, {
@@ -33,16 +36,19 @@ export async function accountCsvFormat(csvFile) {
       },
     });
   });
-
   //suppression du dernier élément (qui est vide par défaut dans l'export account)
-  parsedData = parsedData.filter(
+  const lastElementDeletedData = parsedData.filter(
     (expense) => expense["Date de comptabilisation"] !== null //le dernier élément est sous la forme {"Date de comptabilisation": null}
   );
   // //suppression des prélèvement débit différé
   // data = data.filter(
   //   (dataKey) => !dataKey["Libelle simplifie"].includes("DEBIT")
   // );
-  parsedData.forEach((dataKey) => {
+
+  //Setting de "paiement"
+  const paiementSetData = paiementSetting(lastElementDeletedData);
+
+  paiementSetData.forEach((dataKey) => {
     //Conversion en number et fusion débit-crédit
     if (dataKey.Credit) dataKey.Debit = dataKey.Credit;
     dataKey.Debit = parseFloat(dataKey.Debit);
@@ -71,27 +77,27 @@ export async function accountCsvFormat(csvFile) {
     "Libelle simplifie": "name",
     Debit: "montant",
   };
-  parsedData.forEach((entry, index) => {
+  paiementSetData.forEach((entry, index) => {
     const newEntry = {};
     Object.keys(entry).forEach((key) => {
       const newKey = keyMapping[key] || key; // Utilise la clé originale si elle n'est pas dans keyMapping
       newEntry[newKey] = entry[key];
     });
-    parsedData[index] = newEntry; // Remplace l'ancien objet par le nouvel objet
+    paiementSetData[index] = newEntry; // Remplace l'ancien objet par le nouvel objet
   });
 
   //ajout des clés manquantes pour la db
-  parsedData.forEach((entry, index) => {
+  paiementSetData.forEach((entry, index) => {
     entry["catégorie"] = null;
-    entry["réglé"] = "Oui";
+    entry["réglé"] = true;
     entry["type"] = "Dépenses";
     entry["maPart"] = null;
-    entry["tricount"] = "";
-    entry["mois"] = "Septembre";
-    entry["paiement"] = "Débit 04/10/24";
+    entry["tricount"] = null;
   });
 
-  const renamedData = renameAccountExpenses(parsedData);
+  const renamedData = renameAccountExpenses(paiementSetData);
   const dateFormattedData = formateDate(renamedData);
-  return dateFormattedData;
+  const monthSetData = monthSetting(dateFormattedData);
+  console.log(monthSetData);
+  return monthSetData;
 }
