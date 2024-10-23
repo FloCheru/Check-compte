@@ -16,8 +16,7 @@ root.render(
       <Header />
       <Routes>
         {/* <Route path="/" element={<Home />} /> */}
-        <Route path="/exportToNotion" element={<ExportToNotion />} />
-        <Route path="/csvToJson" element={<CsvToJson />} />
+        <Route path="/sesterceToDatabase" element={<ExportToNotion />} />
         <Route path="/csvToDatabase" element={<CsvToDatabase />} />
       </Routes>
     </Router>

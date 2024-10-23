@@ -8,22 +8,6 @@ function App() {
   const [accountData, setAccountData] = useState(null);
   const [notionData, setNotionData] = useState(null);
   const [fullAccountData, setFullAccountData] = useState(null);
-  // getFilteredPages();
-  //pour tester addDataToDatabase
-  const data = [
-    {
-      name: "test",
-      montant: 10,
-      catégorie: "test",
-      maPart: 10,
-      réglé: true,
-      type: "test",
-      tricount: "test",
-      mois: "test",
-      date: 10,
-      paiement: "test",
-    },
-  ];
 
   return (
     <div className="flex flex-col h-full">

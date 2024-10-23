@@ -1,5 +1,5 @@
-export function addDataToDatabase(data, tableOfDb) {
-  fetch("http://localhost:4000/addExpenses", {
+export function addDataToMySQLDatabase(data, tableOfDb) {
+  fetch("http://localhost:4000/addExpensesOnMySQL", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
